@@ -8,9 +8,9 @@ import (
 	"os"
 )
 
-var dir = flag.String("dir", ".", "root directory to find git directories")
+var dir = flag.String("dir", ".", "root directory to find git repositories in")
 
-func local_git_repos() {
+func repositories() {
 	fileSystem := os.DirFS(*dir)
 
 	fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
@@ -20,7 +20,7 @@ func local_git_repos() {
 
 		if d.IsDir() && d.Name() == ".git" {
 			fmt.Println(path)
-			return nil
+			return fs.SkipDir
 		}
 
 		return nil
@@ -30,5 +30,5 @@ func local_git_repos() {
 
 func main() {
 	flag.Parse()
-	local_git_repos()
+	repositories()
 }
